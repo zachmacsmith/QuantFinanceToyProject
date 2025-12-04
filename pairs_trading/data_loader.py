@@ -18,25 +18,29 @@ def fetch_data(tickers, start_date, end_date):
     # If multiple, it returns a DataFrame.
     # We want to ensure we have a DataFrame with columns matching tickers.
     
-    data = yf.download(tickers, start=start_date, end=end_date)
+    data = yf.download(tickers, start=start_date, end=end_date, auto_adjust=True, progress=False)
     
-    # Check if 'Adj Close' is in columns (multi-level index or flat)
-    if 'Adj Close' in data.columns:
-        data = data['Adj Close']
+    # Handle multi-level columns for multiple tickers
+    if isinstance(data.columns, pd.MultiIndex):
+        # For multiple tickers, yfinance returns MultiIndex columns
+        # Structure: ('Price', 'Ticker') where Price is Close, High, Low, etc.
+        if 'Close' in data.columns.get_level_values(0):
+            data = data['Close']
     elif 'Close' in data.columns:
-        data = data['Close']
-    else:
-        # If multi-level index, it might be under 'Adj Close' or 'Close' at level 0
-        # But yf.download(..., group_by='ticker') might change structure.
-        # Default structure is usually Level 0: Attribute, Level 1: Ticker
-        # Or Level 0: Ticker, Level 1: Attribute if group_by='ticker'
-        # Let's just print columns if we fail to find it.
-        pass # Will likely fail later if not handled, but let's assume standard structure
+        # Single level index
+        data = data[['Close']]
         
     if isinstance(data, pd.Series):
         data = data.to_frame()
+    
+    # Drop columns (tickers) that have too much missing data
+    threshold = len(data) * 0.8  # Require at least 80% of data
+    data = data.dropna(axis=1, thresh=threshold)
         
-    # Drop rows with missing values
+    # Drop rows with any remaining missing values
     data.dropna(inplace=True)
+    
+    if data.empty:
+        print("Warning: Data is empty after processing!")
     
     return data
