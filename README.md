@@ -20,12 +20,12 @@ We tested the strategy across four domains: **Consumer Goods**, **Tech**, **Comm
 ### 1. Classic Consumer (PEP vs KO)
 -   **Result**: **+13.76%**
 -   **Insight**: Stable pair, mean-reverting behavior.
-![PEP vs KO](performance_Classic_Consumer.png)
+![PEP vs KO](pairs_trading/performance_Classic_Consumer.png)
 
 ### 2. Tech Giants (MSFT vs AAPL)
 -   **Result**: **-31.14%**
 -   **Insight**: While correlated, tech stocks often drift apart due to idiosyncratic news. Static hedge ratio failed.
-![MSFT vs AAPL](performance_Tech_Giants.png)
+![MSFT vs AAPL](pairs_trading/performance_Tech_Giants.png)
 
 ### 3. Crypto (BTC vs ETH) - The Power of Kalman Filter
 Crypto markets are volatile. A static hedge ratio failed miserably (**-49.37%**).
@@ -34,7 +34,7 @@ However, by applying a **Kalman Filter** to dynamically adjust the hedge ratio, 
 -   **Static Model**: **-49.37%**
 -   **Kalman Filter**: **+17.20%**
 
-![Crypto Kalman](performance_Crypto_Kalman.png)
+![Crypto Kalman](pairs_trading/performance_Crypto_Kalman.png)
 
 ## Automated Pair Discovery: Training Period Analysis
 
